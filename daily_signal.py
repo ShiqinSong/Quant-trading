@@ -1,13 +1,10 @@
 """
 Daily Cross-Sectional Catch-Up Signal Scanner
-==============================================
+
 Strategy: Use NVDA/AMD/QQQ returns to infer the latent market factor F via PCA.
           Compute residual epsilon for each target stock: epsilon = actual - predicted.
           Signal: -20% < epsilon < -1% means the stock underperformed the factor today
           and has a 60%+ probability of catching up over the next 2-3 days.
-
-Usage:
-    python3 daily_signal.py
 """
 
 import yfinance as yf
@@ -16,10 +13,6 @@ import pandas as pd
 from datetime import datetime, timedelta
 import warnings
 warnings.filterwarnings("ignore")
-
-# ============================================================
-# Parameters
-# ============================================================
 
 # Stocks with validated win rate >= 60% from backtest
 SIGNAL_TICKERS = ["AVGO", "MRVL", "APP", "SMCI", "UNH", "BA"]
@@ -33,14 +26,11 @@ ALL_TICKERS = INPUT_TICKERS + SIGNAL_TICKERS + [
     "TSLA", "MSTR", "DELL", "MU",
 ]
 
-TRAIN_DAYS = 60     # Rolling window for PCA training
-N_FACTORS  = 3      # Number of principal components to use
-EPS_LOW    = -20.0  # Below this: likely earnings event, exclude
-EPS_HIGH   = -1.0   # Above this: signal not strong enough, exclude
+TRAIN_DAYS = 60 # Rolling window for PCA training
+N_FACTORS = 3 # Number of principal components to use
+EPS_LOW = -20.0 # Below this: likely earnings event, exclude
+EPS_HIGH = -1.0  # Above this: signal not strong enough, exclude
 
-# ============================================================
-# Data
-# ============================================================
 
 def get_data():
     end = datetime.now()
@@ -54,9 +44,8 @@ def get_data():
     print(f"  {len(tickers)} stocks, {len(returns)} trading days\n")
     return returns, tickers
 
-# ============================================================
+
 # PCA + Epsilon Calculation
-# ============================================================
 
 def calc_epsilon(train_returns, test_row, input_tickers, tickers):
     """
@@ -86,9 +75,6 @@ def calc_epsilon(train_returns, test_row, input_tickers, tickers):
 
     return epsilon, predicted * 100, actual * 100, explained[0]
 
-# ============================================================
-# Main
-# ============================================================
 
 def main():
     print(f"\n{'='*60}")
@@ -161,7 +147,6 @@ def main():
     else:
         print(f"  No signals today. All monitored stocks tracking the factor normally.\n")
 
-    # Full watchlist overview
     print(f"\n{'='*60}")
     print(f"  Full Watchlist")
     print(f"{'='*60}\n")
